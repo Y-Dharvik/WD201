@@ -1,4 +1,4 @@
-let print_hello = () => {
-  console.log("Hello Node.js");
-};
-print_hello();
+const printHello = () => {
+  console.log('Hello GitHub!')
+}
+printHello()
