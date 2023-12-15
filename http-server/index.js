@@ -1,6 +1,15 @@
 const http = require("http");
 const fs = require("fs");
-const args = require("minimist")(process.argv.slice(2));
+const args = require("minimist")(process.argv.slice(2),{
+  alias:{
+    p: "port",
+  },
+});
+
+console.log(args);
+
+//Required port
+let reqPort = args.p;
 
 //console.log(args);
 //console.log((process.argv.slice(2)[0]) - '0')
@@ -50,5 +59,5 @@ http.createServer(
         }
     }
 )
-.listen((process.argv.slice(2)[0]) - '0');
+.listen(reqPort);
 //.listen(3001);
