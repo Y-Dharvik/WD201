@@ -1,0 +1,2 @@
+Hello World. Welcome to Node.js File System (fs) module.
+This text is appended.
