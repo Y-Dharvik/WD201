@@ -75,43 +75,9 @@ module.exports = (sequelize, DataTypes) => {
       laterTasks.forEach((item) => console.log(item.displayableString()));
     }
 
-    static async overdue() {
-      // FILL IN HERE TO RETURN OVERDUE ITEMS
-
-      return await Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.lt]: new Date(),
-          },
-        },
-      });
-    }
-
-    static async dueToday() {
-      // FILL IN HERE TO RETURN ITEMS DUE TODAY
-      return await Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.eq]: new Date().toISOString().split("T")[0],
-          },
-        },
-      });
-    }
-
-    static async dueLater() {
-      // FILL IN HERE TO RETURN ITEMS DUE LATER
-      return await Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.gt]: new Date().toISOString().split("T")[0],
-          },
-        },
-      });
-    }
-
     static async markAsComplete(id) {
       // FILL IN HERE TO MARK AN ITEM AS COMPLETE
-      return await Todo.update(
+      const mac = await Todo.update(
         { completed: true },
         {
           where: {
@@ -119,6 +85,44 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       );
+      return mac;
+    }
+
+    static async dueToday() {
+      // FILL IN HERE TO RETURN ITEMS DUE TODAY
+      const dt = await Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.eq]: new Date().toISOString().split("T")[0],
+          },
+        },
+      });
+      return dt;
+    }
+
+    static async dueLater() {
+      // FILL IN HERE TO RETURN ITEMS DUE LATER
+      const dl = await Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.gt]: new Date().toISOString().split("T")[0],
+          },
+        },
+      });
+      return dl;
+    }
+
+    static async overdue() {
+      // FILL IN HERE TO RETURN OVERDUE ITEMS
+
+      const od = await Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.lt]: new Date(),
+          },
+        },
+      });
+      return od;
     }
 
     displayableString() {
