@@ -6,6 +6,7 @@ app.use(bodyParser.json());
 
 const { Todo } = require("./models");
 
+// eslint-disable-next-line no-unused-vars
 app.get("/todos", (request, response) => {
   console.log("Getting all todos");
 });
@@ -37,6 +38,7 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
   }
 });
 
+// eslint-disable-next-line no-unused-vars
 app.delete("/todos/:id", (request, response) => {
   console.log("Deleting a todo with id", request.params.id);
 });
