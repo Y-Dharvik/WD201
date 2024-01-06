@@ -63,13 +63,12 @@ app.delete("/todos/:id", async function (request, response) {
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
   // response.send(true)
 
-  const todo = await Todo.findByPk(request.params.id);
-  try {
-    await todo.destroy();
-    return response.json(true);
-  } catch (error) {
+  try{
+    const delTodo = await Todo.deleteTodo(request.params.id);
+    return response.json(delTodo ? true : false);
+  }catch(error){
     console.log(error);
-    return response.status(false).json(error);
+    return response.status(422).json(error);
   }
 });
 
