@@ -11,3 +11,7 @@ body{
     box-sizing: border-box;
 
 }
+
+.Todo-item:hover .trash-icon{
+    display: block;
+}
