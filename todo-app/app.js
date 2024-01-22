@@ -1,10 +1,14 @@
 const express = require("express");
 const app = express();
+const csurf = require("csurf");
+const cookieParser = require("cookie-parser");
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser("Shh! It's a secret!"));
+app.use(csurf({ cookie: true }));
 
 app.set("view engine", "ejs");
 app.get("/", async (request, response) => {
@@ -14,7 +18,13 @@ app.get("/", async (request, response) => {
   const duesToday = await Todo.dueToday();
 
   if (request.accepts("html")) {
-    response.render("index", { allTodos, overdues, duesLater, duesToday });
+    response.render("index", {
+      allTodos,
+      overdues,
+      duesLater,
+      duesToday,
+      csrfToken: request.csrfToken(),
+    });
   } else {
     response.json({ allTodos, overdues, duesLater, duesToday });
   }
@@ -54,8 +64,12 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   try {
-    await Todo.addTodo(request.body);
-    return response.redirect("/");
+    const todo = await Todo.addTodo(request.body);
+    if (request.accepts("html")) {
+      return response.redirect("/");
+    } else {
+      return response.json(todo);
+    }
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);

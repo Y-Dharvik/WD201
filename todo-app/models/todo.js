@@ -12,8 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
 
-    static addTodo({ title, dueDate }) {
-      return this.create({ title: title, dueDate: dueDate, completed: false });
+    static async addTodo(params) {
+      return this.create({
+        title: params.title,
+        dueDate: params.dueDate,
+        completed: params.completed,
+      });
     }
 
     static getTodos() {
@@ -53,6 +57,11 @@ module.exports = (sequelize, DataTypes) => {
     markAsCompleted() {
       return this.update({ completed: true });
     }
+
+    setCompletionStatus(status) {
+      return this.update({ completed: status });
+    }
+
     static async deleteTodo(id) {
       return await Todo.destroy({ where: { id: id } });
     }
