@@ -4,22 +4,23 @@ const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path");
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.set("view engine", "ejs");
-app.get('/', async(request, response) => {
+app.get("/", async (request, response) => {
   const allTodos = await Todo.getTodos();
   const overdues = await Todo.overDue();
   const duesLater = await Todo.dueLater();
   const duesToday = await Todo.dueToday();
 
-  if(request.accepts('html')){
-    response.render('index', {allTodos, overdues, duesLater, duesToday});
-  }else{
-    response.json({allTodos, overdues, duesLater, duesToday});
+  if (request.accepts("html")) {
+    response.render("index", { allTodos, overdues, duesLater, duesToday });
+  } else {
+    response.json({ allTodos, overdues, duesLater, duesToday });
   }
 });
 
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", function (request, response) {
   response.send("Hello World");
@@ -53,8 +54,8 @@ app.get("/todos/:id", async function (request, response) {
 
 app.post("/todos", async function (request, response) {
   try {
-    const todo = await Todo.addTodo(request.body);
-    return response.json(todo);
+    await Todo.addTodo(request.body);
+    return response.redirect("/");
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
@@ -80,10 +81,10 @@ app.delete("/todos/:id", async function (request, response) {
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
   // response.send(true)
 
-  try{
+  try {
     const delTodo = await Todo.deleteTodo(request.params.id);
     return response.json(delTodo ? true : false);
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
