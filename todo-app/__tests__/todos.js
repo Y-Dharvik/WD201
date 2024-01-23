@@ -29,7 +29,7 @@ describe("Todo Application", function () {
     const res = await agent.get("/");
     const csrfToken = extractCsrfToken(res);
     const response = await agent.post("/todos").send({
-      title: "Buy milk",
+      title: "Buy Milk",
       dueDate: new Date().toISOString(),
       completed: false,
       _csrf: csrfToken,
@@ -67,7 +67,7 @@ describe("Todo Application", function () {
     res = await agent.get("/");
     csrfToken = extractCsrfToken(res);
     const markCompleteResponse = await agent
-      .put(`/todos/${latestTodo.id}/markAsCompleted`)
+      .put(`/todos/${latestTodo.id}`)
       .send({
         _csrf: csrfToken,
       });
@@ -97,11 +97,14 @@ describe("Todo Application", function () {
     const parsedResponse = JSON.parse(response.text);
 
     expect(parsedResponse.length).toBe(allTodosCount);
+    expect(parsedResponse.length).toBe(4);
     expect(parsedResponse[allTodosCount - 1]["title"]).toBe("Buy ps3");
   });
 
   // test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
   //   // FILL IN YOUR CODE HERE
+  //   let res = await agent.get("/");
+  //   let csrfToken = extractCsrfToken(res);
   //   const response = await agent
   //     .post("/todos")
   //     .set("Accept", "application/json")
@@ -109,15 +112,17 @@ describe("Todo Application", function () {
   //       title: "Buy milk",
   //       dueDate: new Date().toISOString(),
   //       completed: false,
+  //       _csrf: csrfToken,
   //     });
 
   //   expect(response.statusCode).toBe(200);
-  //   expect(response.header["content-type"]).toMatch(/application\/json/);
+  //   expect(response.header["content-type"]).toMatch("application/json");
 
   //   const parsedResponse = JSON.parse(response.text);
   //   const todoId = parsedResponse.id;
   //   expect(parsedResponse.id).toBeDefined();
   //   const deleteResponse = await agent.delete(`/todos/${todoId}`).send();
+  //   expect(deleteResponse.statusCode).toBe(200);
   //   const parsedDeleteResponse = JSON.parse(deleteResponse.text);
   //   expect(parsedDeleteResponse).toBe(true);
   // });

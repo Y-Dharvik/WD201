@@ -16,6 +16,7 @@ app.get("/", async (request, response) => {
   const overdues = await Todo.overDue();
   const duesLater = await Todo.dueLater();
   const duesToday = await Todo.dueToday();
+  const completedTodos = await Todo.completedTodos();
 
   if (request.accepts("html")) {
     response.render("index", {
@@ -23,10 +24,11 @@ app.get("/", async (request, response) => {
       overdues,
       duesLater,
       duesToday,
+      completedTodos,
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({ allTodos, overdues, duesLater, duesToday });
+    response.json({ allTodos, overdues, duesLater, duesToday, completedTodos});
   }
 });
 
@@ -76,10 +78,10 @@ app.post("/todos", async function (request, response) {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
+app.put("/todos/:id", async function (request, response) {
   const todo = await Todo.findByPk(request.params.id);
   try {
-    const updatedTodo = await todo.markAsCompleted();
+    const updatedTodo = await todo.setCompletionStatus(request.body.completed);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
@@ -97,7 +99,7 @@ app.delete("/todos/:id", async function (request, response) {
 
   try {
     const delTodo = await Todo.deleteTodo(request.params.id);
-    return response.json(delTodo ? true : false);
+    response.send(delTodo ? true : false);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({
         title: params.title,
         dueDate: params.dueDate,
-        completed: params.completed,
+        completed: false,
       });
     }
 
@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.lt]: new Date(),
           },
+          completed: {
+            [Op.eq]: false,
+          },
         },
       });
     }
@@ -39,6 +42,9 @@ module.exports = (sequelize, DataTypes) => {
         where: {
           dueDate: {
             [Op.eq]: new Date(),
+          },
+          completed: {
+            [Op.eq]: false,
           },
         },
       });
@@ -50,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
           dueDate: {
             [Op.gt]: new Date(),
           },
+          completed: {
+            [Op.eq]: false,
+          },
         },
       });
     }
@@ -59,7 +68,15 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     setCompletionStatus(status) {
-      return this.update({ completed: status });
+      return this.update({ completed: !status });
+    }
+
+    static completedTodos() {
+      return this.findAll({
+        where: {
+          completed: true,
+        },
+      });
     }
 
     static async deleteTodo(id) {

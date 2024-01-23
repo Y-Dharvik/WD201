@@ -10,13 +10,15 @@
     <title>Document</title>
     <script>
         var token = document.querySelector('meta[name = "csrf-token"]').getAttribute('content');
-        function updateTodo(id){
-            fetch(`/todos/${id}/markAsCompleted`,{
-                method : 'put',
+        async function updateTodo(id,status){
+            fetch(`/todos/${id}`,{
+                method : 'PUT',
                 headers : {'Content-Type' : 'application/json'},
                 body : JSON.stringify({
-                    _csrf : token
-                })
+                    completed: status,
+                    _csrf : token,
+                }
+                )
             })
             .then((res) => {
                 if(res.ok){
@@ -28,7 +30,7 @@
             })
         }
 
-        function deleteTodo(id){
+        async function deleteTodo(id){
             fetch(`/todos/${id}`,{
                 method : 'delete',
                 headers : {'Content-Type' : 'application/json'},
@@ -51,7 +53,7 @@
     <div class = "grid grid-cols-6">
         <div class = "col-start-3 col-span-2">
             <%- include('header.ejs') %>
-            <%- include('todos.ejs', {overdues, duesToday, duesLater, csrfToken}) %>
+            <%- include('todos.ejs', {overdues, duesToday, duesLater, completedTodos, csrfToken}) %>
             <%- include('footer.ejs') %>
         </div>
     </div>
