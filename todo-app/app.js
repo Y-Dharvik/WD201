@@ -28,6 +28,9 @@ passport.use(new localStrategy({
 }, (username, password, done) => {
   User.findOne({ where: { email: username } })
   .then(async function (user) {
+    if (!user) {
+      return done(null, false, { message: "Invalid email" });
+    }
     const result = await bcrypt.compare(password, user.password);
     if (result) {
       return done(null, user);
@@ -36,6 +39,8 @@ passport.use(new localStrategy({
     }
   })
   .catch((err) => {
+    console.log(err);
+    flash("error", "Couldn't Login, Please try again!");
     return done(err);
   });
 }))
@@ -148,8 +153,15 @@ app.post(
     failureFlash: true,
   }),
   function (request, response) {
-    console.log(request.user);
-    response.redirect("/todos");
+    try{
+      console.log(request.user);
+      response.redirect("/todos");
+    }catch(error){
+      console.log(error);
+      request.flash("error", "Couldn't Login, Please try again!");
+      return response.status(422).json(error);
+    }
+    
   }
 );
 
