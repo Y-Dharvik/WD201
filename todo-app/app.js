@@ -75,6 +75,9 @@ app.use(function(request, response, next) {
 
 app.set("view engine", "ejs");
 app.get("/", async (request, response) => {
+    if(request.isAuthenticated()){
+      return response.redirect("/todos");
+    }
     response.render("index", {
       csrfToken: request.csrfToken(),
     });
